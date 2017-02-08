@@ -17,24 +17,28 @@ sudo chmod -R 775 /var/cache/swift
 
 #create thee ring builder files
 echo " >>>>> Creating the rings >>>>>"
+#accounts ring
 sudo swift-ring-builder account.builder create 10 3 1
-sudo swift-ring-builder container.builder create 10 3 1
-sudo swift-ring-builder object.builder create 10 3 1
-
 sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdb --weight 100
 sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdc --weight 100
 sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdd --weight 100
+# rebalance
+sudo swift-ring-builder account.builder rebalance
 
+#containers ring
+sudo swift-ring-builder container.builder create 10 3 1
 sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdb --weight 100
 sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdc --weight 100
 sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdd --weight 100
+#rebalance
+sudo swift-ring-builder container.builder rebalance
 
+#objects ring
+sudo swift-ring-builder object.builder create 10 3 1
 sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdb --weight 100
 sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdc --weight 100
 sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdd --weight 100
-
-sudo swift-ring-builder account.builder rebalance
-sudo swift-ring-builder container.builder rebalance
+#rebalance
 sudo swift-ring-builder object.builder rebalance
 
 echo "the contents of the rings are:"
@@ -51,6 +55,7 @@ sudo chown -R root:swift /etc/swift
 echo " >>>>> restarting services >>>>>"
 sudo service memcached restart
 sudo service swift-proxy restart
+
 sudo swift-init all restart
 
 echo " Sourcing the env variables for authentication with swift."

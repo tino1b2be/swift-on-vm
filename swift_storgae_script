@@ -1,0 +1,43 @@
+#!/bin/bash
+set -ex
+
+sudo mkdir -p /etc/swift
+echo " >>>>> Downloading the config files for the account, container and object servers. >>>>> ."
+echo ""
+sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/account-server-sample.conf
+sudo curl -o /etc/swift/container-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/container-server-sample.conf
+sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/object-server-sample.conf
+sudo chown -R swift:swift /srv/node
+sudo mkdir -p /var/cache/swift
+sudo chown -R root:swift /var/cache/swift
+sudo chmod -R 775 /var/cache/swift
+
+#create thee ring builder files
+echo " >>>>> Creating the rings >>>>>"
+sudo swift-ring-builder account.builder create 10 3 1
+sudo swift-ring-builder container.builder create 10 3 1
+sudo swift-ring-builder object.builder create 10 3 1
+
+sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdb --weight 100
+sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdc --weight 100
+sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdd --weight 100
+
+sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdb --weight 100
+sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdc --weight 100
+sudo swift-ring-builder container.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6001 --device sdd --weight 100
+
+sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdb --weight 100
+sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdc --weight 100
+sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6000 --device sdd --weight 100
+
+sudo swift-ring-builder account.builder rebalance
+sudo swift-ring-builder container.builder rebalance
+sudo swift-ring-builder object.builder rebalance
+echo "the contents of the rings are:"
+echo "=============================="
+swift-ring-builder account.builder
+echo "=============================="
+swift-ring-builder container.builder
+echo "=============================="
+sudo swift-ring-builder object.builder
+echo "=============================="

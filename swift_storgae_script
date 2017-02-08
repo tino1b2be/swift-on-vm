@@ -2,6 +2,7 @@
 sudo set -ex
 
 sudo mkdir -p /etc/swift
+cd /etc/swift
 echo " >>>>> Downloading the config files. >>>>> ."
 echo ""
 sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/account-server-sample.conf

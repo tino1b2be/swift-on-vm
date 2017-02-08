@@ -1,12 +1,14 @@
 #!/bin/bash
-set -ex
+sudo set -ex
 
 sudo mkdir -p /etc/swift
-echo " >>>>> Downloading the config files for the account, container and object servers. >>>>> ."
+echo " >>>>> Downloading the config files. >>>>> ."
 echo ""
 sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/account-server-sample.conf
 sudo curl -o /etc/swift/container-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/container-server-sample.conf
 sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/object-server-sample.conf
+sudo curl -o /etc/swift/swift.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/swift-sample.conf
+
 sudo chown -R swift:swift /srv/node
 sudo mkdir -p /var/cache/swift
 sudo chown -R root:swift /var/cache/swift
@@ -33,6 +35,7 @@ sudo swift-ring-builder object.builder add --region 1 --zone 1 --ip 127.0.0.1 --
 sudo swift-ring-builder account.builder rebalance
 sudo swift-ring-builder container.builder rebalance
 sudo swift-ring-builder object.builder rebalance
+
 echo "the contents of the rings are:"
 echo "=============================="
 swift-ring-builder account.builder
@@ -41,3 +44,10 @@ swift-ring-builder container.builder
 echo "=============================="
 sudo swift-ring-builder object.builder
 echo "=============================="
+
+sudo chown -R root:swift /etc/swift
+
+echo " >>>>> restarting services >>>>>"
+sudo service memcached restart
+sudo service swift-proxy restart
+sudo swift-init all restart

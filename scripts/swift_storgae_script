@@ -3,13 +3,6 @@ set -ex
 
 sudo mkdir -p /etc/swift
 cd /etc/swift
-echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-echo " >>>>> Downloading and installing Swift packages. >>>>>"
-echo ""
-echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-
-sudo apt-get install memcached python-memcache swift swift-proxy python-swiftclient swift-account swift-container swift-object
 
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""
@@ -17,12 +10,12 @@ echo " >>>>>>>>>> Downloading the config files. >>>>>>>>>>>>>"
 echo ""
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
-sudo curl -o /etc/swift/proxy-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/proxy-server-sample.conf
-sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/account-server-sample.conf
-sudo curl -o /etc/swift/container-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/container-server-sample.conf
-sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/object-server-sample.conf
-sudo curl -o /etc/swift/swift.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/swift-sample.conf
-sudo curl -o $HOME/testrc https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/swiftrc
+sudo curl -o /etc/swift/proxy-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/proxy-server-sample.conf
+sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/account-server-sample.conf
+sudo curl -o /etc/swift/container-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/container-server-sample.conf
+sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/object-server-sample.conf
+sudo curl -o /etc/swift/swift.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/swift-sample.conf
+sudo curl -o $HOME/swiftrc https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/scripts/swiftrc
 
 sudo chown -R swift:swift /srv/node
 sudo mkdir -p /var/cache/swift

@@ -1,10 +1,23 @@
 #!/bin/bash
-sudo set -ex
+set -ex
 
 sudo mkdir -p /etc/swift
 cd /etc/swift
-echo " >>>>> Downloading the config files. >>>>> ."
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""
+echo " >>>>> Downloading and installing Swift packages. >>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+sudo apt-get install memcached python-memcache swift swift-proxy python-swiftclient swift-account swift-container swift-object
+
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>> Downloading the config files. >>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+sudo curl -o /etc/swift/proxy-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/proxy-server-sample.conf
 sudo curl -o /etc/swift/account-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/account-server-sample.conf
 sudo curl -o /etc/swift/container-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/container-server-sample.conf
 sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/master/object-server-sample.conf
@@ -16,8 +29,13 @@ sudo mkdir -p /var/cache/swift
 sudo chown -R root:swift /var/cache/swift
 sudo chmod -R 775 /var/cache/swift
 
+cd /etc/swift
 #create thee ring builder files
-echo " >>>>> Creating the rings >>>>>"
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>> Creating the rings >>>>>>>>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 #accounts ring
 sudo swift-ring-builder account.builder create 10 3 1
 sudo swift-ring-builder account.builder add --region 1 --zone 1 --ip 127.0.0.1 --port 6002 --device sdb --weight 100
@@ -52,14 +70,24 @@ sudo swift-ring-builder object.builder
 echo "=============================="
 
 sudo chown -R root:swift /etc/swift
-
-echo " >>>>> restarting services >>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>> restarting services >>>>>>>>>>>>>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
 sudo service memcached restart
 sudo service swift-proxy restart
 
 sudo swift-init all restart
-
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
 echo " Sourcing the env variables for authentication with swift."
+echo ""
+echo " >>> #### Run 'swift stat' to verify operation #### >>>>>>>"
+echo ""
+echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 source $HOME/testrc
 
 echo "Run 'swift stat' to verify operation"

@@ -17,9 +17,9 @@ sudo curl -o /etc/swift/object-server.conf https://raw.githubusercontent.com/tin
 sudo curl -o /etc/swift/swift.conf https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/config_files/swift-sample.conf
 sudo curl -o $HOME/swiftrc https://raw.githubusercontent.com/tino1b2be/swift-on-vm/v0.1/scripts/swiftrc
 
-sudo chown -R swift:swift /srv/node
+sudo chown -R ${USER:=$(/usr/bin/id -run)}:$USER /srv/node
 sudo mkdir -p /var/cache/swift
-sudo chown -R root:swift /var/cache/swift
+sudo chown -R $USER:$USER /var/cache/swift
 sudo chmod -R 775 /var/cache/swift
 
 cd /etc/swift
@@ -62,7 +62,7 @@ echo "=============================="
 sudo swift-ring-builder object.builder
 echo "=============================="
 
-sudo chown -R root:swift /etc/swift
+sudo chown -R $USER:$USER /etc/swift
 echo ""
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""
@@ -81,6 +81,6 @@ echo ""
 echo " >>> #### Run 'swift stat' to verify operation #### >>>>>>>"
 echo ""
 echo " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-source $HOME/testrc
+source $HOME/swiftrc
 
 echo "Run 'swift stat' to verify operation"
